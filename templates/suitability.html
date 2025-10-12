@@ -1,0 +1,472 @@
+{% extends 'base.html' %}
+{% block title %}CropMate - Local Suitability{% endblock %}
+{% block extra_head %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .location-selector {
+            background: var(--gradient-primary);
+            color: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .crop-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            transition: var(--transition-normal);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .crop-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .crop-card.high-suitability {
+            border-left-color: var(--success);
+        }
+        
+        .crop-card.medium-suitability {
+            border-left-color: var(--warning);
+        }
+        
+        .crop-card.low-suitability {
+            border-left-color: var(--danger);
+        }
+        
+        .suitability-badge {
+            display: inline-block;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            margin: var(--spacing-xs);
+        }
+        
+        .suitability-badge.high {
+            background: linear-gradient(135deg, #D4EDDA 0%, #C3E6CB 100%);
+            color: var(--success);
+        }
+        
+        .suitability-badge.medium {
+            background: linear-gradient(135deg, #FFF3CD 0%, #FFEAA7 100%);
+            color: var(--warning);
+        }
+        
+        .suitability-badge.low {
+            background: linear-gradient(135deg, #F8D7DA 0%, #F5C6CB 100%);
+            color: var(--danger);
+        }
+        
+        .chart-container {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-lg);
+            height: 360px; /* Constrain chart height */
+        }
+        
+        .chart-container canvas {
+            height: 100% !important; /* Fill constrained container height */
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            border-top: 4px solid var(--primary-color);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .filter-section {
+            background: var(--gradient-light);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .filter-btn {
+            background: var(--white);
+            border: 2px solid var(--primary-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            margin: var(--spacing-xs);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-weight: 500;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1><i class="bi bi-geo-alt"></i> Local Suitability</h1>
+        <p class="subtitle">Find the best crops for your specific location and climate conditions</p>
+    </div>
+    <div id="suitabilityError" class="alert alert-danger" style="display: none;"></div>
+
+    <div class="location-selector">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h4 class="mb-3"><i class="bi bi-geo-alt-fill"></i> Select Your Location</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="stateSelect" class="form-label">State</label>
+                        <select class="form-select" id="stateSelect">
+                            <option value="">Choose State...</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="West Bengal">West Bengal</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="districtSelect" class="form-label">District</label>
+                        <select class="form-select" id="districtSelect">
+                            <option value="">Choose District...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-center">
+                    <button class="btn btn-light btn-lg" onclick="analyzeSuitability()">
+                        <i class="bi bi-search"></i> Analyze Suitability
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-section">
+        <h5 class="mb-3"><i class="bi bi-funnel"></i> Filter by Suitability</h5>
+        <div class="d-flex flex-wrap">
+            <button class="filter-btn active" data-filter="all">All Crops</button>
+            <button class="filter-btn" data-filter="high">High Suitability</button>
+            <button class="filter-btn" data-filter="medium">Medium Suitability</button>
+            <button class="filter-btn" data-filter="low">Low Suitability</button>
+        </div>
+    </div>
+
+    <div class="stats-grid" id="suitabilityStats" style="display: none;">
+        <div class="stat-card">
+            <div class="stat-number" id="totalCrops">0</div>
+            <div class="stat-label">Total Crops</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="highSuitability">0</div>
+            <div class="stat-label">High Suitability</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="mediumSuitability">0</div>
+            <div class="stat-label">Medium Suitability</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="lowSuitability">0</div>
+            <div class="stat-label">Low Suitability</div>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <h5 class="mb-3"><i class="bi bi-bar-chart"></i> Suitability Analysis</h5>
+        <canvas id="suitabilityChart"></canvas>
+    </div>
+
+    <div class="row" id="cropsContainer">
+        <!-- Crops will be loaded here -->
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const stateSelect = document.getElementById('stateSelect');
+    const districtSelect = document.getElementById('districtSelect');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const cropsContainer = document.getElementById('cropsContainer');
+    const suitabilityStats = document.getElementById('suitabilityStats');
+    
+    // Sample district data
+    const districtData = {
+        'Punjab': ['Amritsar', 'Ludhiana', 'Jalandhar', 'Patiala', 'Bathinda'],
+        'Haryana': ['Gurgaon', 'Faridabad', 'Hisar', 'Karnal', 'Panipat'],
+        'Uttar Pradesh': ['Lucknow', 'Kanpur', 'Agra', 'Varanasi', 'Meerut'],
+        'Bihar': ['Patna', 'Gaya', 'Muzaffarpur', 'Bhagalpur', 'Darbhanga'],
+        'West Bengal': ['Kolkata', 'Howrah', 'Burdwan', 'Hooghly', 'Nadia'],
+        'Maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Aurangabad'],
+        'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar'],
+        'Rajasthan': ['Jaipur', 'Jodhpur', 'Udaipur', 'Kota', 'Ajmer'],
+        'Madhya Pradesh': ['Bhopal', 'Indore', 'Gwalior', 'Jabalpur', 'Ujjain'],
+        'Karnataka': ['Bangalore', 'Mysore', 'Hubli', 'Mangalore', 'Belgaum'],
+        'Tamil Nadu': ['Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem'],
+        'Kerala': ['Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Thrissur', 'Kannur'],
+        'Andhra Pradesh': ['Hyderabad', 'Visakhapatnam', 'Vijayawada', 'Guntur', 'Nellore'],
+        'Telangana': ['Hyderabad', 'Warangal', 'Nizamabad', 'Karimnagar', 'Khammam'],
+        'Odisha': ['Bhubaneswar', 'Cuttack', 'Rourkela', 'Berhampur', 'Sambalpur'],
+        'Assam': ['Guwahati', 'Silchar', 'Dibrugarh', 'Jorhat', 'Tezpur'],
+        'Jharkhand': ['Ranchi', 'Jamshedpur', 'Dhanbad', 'Bokaro', 'Hazaribagh'],
+        'Chhattisgarh': ['Raipur', 'Bhilai', 'Bilaspur', 'Korba', 'Durg'],
+        'Himachal Pradesh': ['Shimla', 'Mandi', 'Solan', 'Dharamshala', 'Bilaspur'],
+        'Uttarakhand': ['Dehradun', 'Haridwar', 'Roorkee', 'Haldwani', 'Rudrapur']
+    };
+    
+    // Helper to populate districts for a given state
+    function loadDistricts(selectedState) {
+        districtSelect.innerHTML = '<option value="">Choose District...</option>';
+        if (selectedState && districtData[selectedState]) {
+            districtData[selectedState].forEach(district => {
+                const option = document.createElement('option');
+                option.value = district;
+                option.textContent = district;
+                districtSelect.appendChild(option);
+            });
+        }
+    }
+    
+    // Update districts when state changes
+    stateSelect.addEventListener('change', function() {
+        const selectedState = this.value;
+        loadDistricts(selectedState);
+    });
+    
+    // Filter functionality
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            const filter = this.dataset.filter;
+            filterCrops(filter);
+        });
+    });
+    
+    // Auto-run analysis on load using local auto-detect if no state chosen
+    setTimeout(() => {
+        try {
+            if (!stateSelect.value) {
+                analyzeSuitability();
+            }
+        } catch (e) { console.error('Auto-analysis failed', e); }
+    }, 200);
+
+    async function analyzeSuitability() {
+        let state = stateSelect.value;
+        let district = districtSelect.value;
+        
+        try {
+            console.log('Analyzing suitability for state:', state || '(auto)', 'district:', district || '(auto)');
+            let data;
+            // If state not selected, auto-detect locally
+            if (!state) {
+                // Try browser geolocation first
+                try {
+                    const coords = await new Promise((resolve, reject) => {
+                        if (!navigator.geolocation) return reject(new Error('Geolocation unsupported'));
+                        navigator.geolocation.getCurrentPosition(
+                            pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+                            err => reject(err),
+                            { enableHighAccuracy: true, timeout: 6000, maximumAge: 300000 }
+                        );
+                    });
+                    const coordRes = await fetch(`/api/suitability/from-coords?lat=${encodeURIComponent(coords.lat)}&lon=${encodeURIComponent(coords.lon)}`);
+                    data = await coordRes.json();
+                } catch (geoErr) {
+                    // Fallback to server IP auto-detect
+                    const localRes = await fetch('/api/suitability/local');
+                    data = await localRes.json();
+                }
+                data = await localRes.json();
+                console.log('Local suitability payload:', data);
+                if (data && data.state) {
+                    state = data.state;
+                    stateSelect.value = state;
+                    // load districts then set
+                    loadDistricts(state);
+                    if (data.district) {
+                        const opt = Array.from(districtSelect.options).find(o => o.textContent.trim().toLowerCase() === data.district.trim().toLowerCase());
+                        if (opt) districtSelect.value = opt.value;
+                        district = data.district;
+                    }
+                }
+            }
+            
+            // If we don't already have data from local endpoint, fetch by state
+            if (!data) {
+                const res = await fetch(`/api/suitability/${encodeURIComponent(state)}`);
+                data = await res.json();
+                console.log('State suitability payload:', data);
+            }
+            
+            if (!data || !data.suitable_crops) throw new Error('No data');
+            const crops = data.suitable_crops.map(c => ({
+                name: c['crop_name'] || c['crop'] || c['name'] || 'Crop',
+                suitability: c['suitability_label'] || (c['suitability_score'] >= 75 ? 'high' : c['suitability_score'] >= 55 ? 'medium' : 'low'),
+                score: Math.round(c['suitability_score'] || c['score'] || 60),
+                reason: c['reason'] || 'Based on local climate, soil and market factors'
+            }));
+            console.log('Normalized crops:', crops);
+            displayCrops(crops);
+            updateStats(crops);
+            updateChart(crops);
+            suitabilityStats.style.display = 'grid';
+        } catch (e) {
+            console.error('Suitability load failed', e);
+            const err = document.getElementById('suitabilityError');
+            if (err) { err.textContent = 'Could not load suitability. Please try again.'; err.style.display = 'block'; }
+        }
+    }
+    // Expose for the "Analyze Suitability" button onclick
+    window.analyzeSuitability = analyzeSuitability;
+    
+    // Removed demo generator; now using backend data
+    
+    function displayCrops(crops) {
+        cropsContainer.innerHTML = '';
+        
+        crops.forEach(crop => {
+            const cropCard = document.createElement('div');
+            cropCard.className = `col-md-6 col-lg-4 mb-4`;
+            cropCard.innerHTML = `
+                <div class="crop-card ${crop.suitability}-suitability">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5>${crop.name}</h5>
+                        <span class="suitability-badge ${crop.suitability}">${crop.suitability.toUpperCase()}</span>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span>Suitability Score:</span>
+                            <strong>${crop.score}%</strong>
+                        </div>
+                        <div class="progress mt-2">
+                            <div class="progress-bar bg-${crop.suitability === 'high' ? 'success' : crop.suitability === 'medium' ? 'warning' : 'danger'}" 
+                                 style="width: ${crop.score}%"></div>
+                        </div>
+                    </div>
+                    <p class="text-muted">${crop.reason}</p>
+                </div>
+            `;
+            cropsContainer.appendChild(cropCard);
+        });
+    }
+    
+    function updateStats(crops) {
+        const total = crops.length;
+        const high = crops.filter(c => c.suitability === 'high').length;
+        const medium = crops.filter(c => c.suitability === 'medium').length;
+        const low = crops.filter(c => c.suitability === 'low').length;
+        
+        document.getElementById('totalCrops').textContent = total;
+        document.getElementById('highSuitability').textContent = high;
+        document.getElementById('mediumSuitability').textContent = medium;
+        document.getElementById('lowSuitability').textContent = low;
+    }
+    
+    function updateChart(crops) {
+        const ctx = document.getElementById('suitabilityChart').getContext('2d');
+        
+        const labels = crops.map(c => c.name);
+        const scores = crops.map(c => c.score);
+        const colors = crops.map(c => 
+            c.suitability === 'high' ? '#28a745' : 
+            c.suitability === 'medium' ? '#ffc107' : '#dc3545'
+        );
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Suitability Score',
+                    data: scores,
+                    backgroundColor: colors,
+                    borderColor: colors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Suitability Score (%)'
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    function filterCrops(filter) {
+        const cropCards = document.querySelectorAll('.crop-card');
+        
+        cropCards.forEach(card => {
+            const parent = card.closest('.col-md-6');
+            if (filter === 'all') {
+                parent.style.display = 'block';
+            } else {
+                const suitability = card.classList.contains(`${filter}-suitability`);
+                parent.style.display = suitability ? 'block' : 'none';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,375 @@
+{% extends 'base.html' %}
+{% block title %}CropMate - Best Practices{% endblock %}
+{% block extra_head %}
+    <style>
+        .practice-card {
+            border: none;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-normal);
+            margin-bottom: var(--spacing-lg);
+            overflow: hidden;
+        }
+        
+        .practice-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .practice-header {
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: var(--spacing-lg);
+            text-align: center;
+        }
+        
+        .practice-header h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .practice-body {
+            padding: var(--spacing-lg);
+        }
+        
+        .practice-tips {
+            background: var(--gradient-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+        
+        .practice-tips h6 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .practice-tips ul {
+            margin: 0;
+            padding-left: var(--spacing-md);
+        }
+        
+        .practice-tips li {
+            margin-bottom: var(--spacing-xs);
+            color: var(--gray);
+        }
+        
+        .crop-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .search-container {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .search-input {
+            border: 2px solid var(--light-gray);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-size-lg);
+            width: 100%;
+            transition: var(--transition-fast);
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(46, 139, 87, 0.25);
+        }
+        
+        .category-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+        
+        .category-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: 2px solid var(--primary-color);
+            background: var(--white);
+            color: var(--primary-color);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            transition: var(--transition-fast);
+            cursor: pointer;
+        }
+        
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1><i class="bi bi-lightbulb"></i> Best Practices</h1>
+        <p class="subtitle">Learn proven farming techniques and avoid common problems for each crop</p>
+    </div>
+
+    <div class="search-container">
+        <div class="row">
+            <div class="col-md-8">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search for crops or practices...">
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="soil">Soil Management</option>
+                    <option value="irrigation">Irrigation</option>
+                    <option value="pest">Pest Control</option>
+                    <option value="harvest">Harvesting</option>
+                </select>
+            </div>
+        </div>
+        <div class="category-filter">
+            <button class="category-btn active" data-category="">All</button>
+            <button class="category-btn" data-category="soil">Soil Management</button>
+            <button class="category-btn" data-category="irrigation">Irrigation</button>
+            <button class="category-btn" data-category="pest">Pest Control</button>
+            <button class="category-btn" data-category="harvest">Harvesting</button>
+        </div>
+    </div>
+
+    <div class="row" id="practicesContainer">
+        <!-- Rice Practices -->
+        <div class="col-md-6 mb-4" data-category="soil irrigation">
+            <div class="practice-card">
+                <div class="practice-header">
+                    <img src="{{ url_for('static', filename='images/rice.png') }}" alt="Rice" class="crop-image">
+                    <h3>Rice Farming</h3>
+                </div>
+                <div class="practice-body">
+                    <p><strong>Best practices for rice cultivation:</strong></p>
+                    <div class="practice-tips">
+                        <h6><i class="bi bi-droplet"></i> Water Management</h6>
+                        <ul>
+                            <li>Maintain 2-3 inches of standing water during vegetative stage</li>
+                            <li>Reduce water level during flowering to prevent lodging</li>
+                            <li>Drain fields 2 weeks before harvest</li>
+                        </ul>
+                    </div>
+                    <div class="practice-tips">
+                        <h6><i class="bi bi-shield-check"></i> Pest Control</h6>
+                        <ul>
+                            <li>Use resistant varieties like BPT 5204, MTU 1010</li>
+                            <li>Apply neem oil for brown plant hopper control</li>
+                            <li>Monitor for stem borer and leaf folder</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wheat Practices -->
+        <div class="col-md-6 mb-4" data-category="soil irrigation">
+            <div class="practice-card">
+                <div class="practice-header">
+                    <img src="{{ url_for('static', filename='images/wheat.png') }}" alt="Wheat" class="crop-image">
+                    <h3>Wheat Farming</h3>
+                </div>
+                <div class="practice-body">
+                    <p><strong>Best practices for wheat cultivation:</strong></p>
+                    <div class="practice-tips">
+                        <h6><i class="bi bi-thermometer"></i> Temperature Management</h6>
+                        <ul>
+                            <li>Optimal temperature: 15-20°C during growing season</li>
+                            <li>Avoid sowing when temperature is above 25°C</li>
+                            <li>Protect from frost damage in winter</li>
+                        </ul>
+                    </div>
+                    <div class="practice-tips">
+                        <h6><i class="bi bi-droplet"></i> Irrigation</h6>
+                        <ul>
+                            <li>First irrigation: 20-25 days after sowing</li>
+                            <li>Critical stages: Crown root initiation, flowering</li>
+                            <li>Stop irrigation 15 days before harvest</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cotton Practices -->
+        <div class="col-md-6 mb-4" data-category="pest irrigation">
+            <div class="practice-card">
+                <div class="practice-header">
+                    <img src="{{ url_for('static', filename='images/cotton.png') }}" alt="Cotton" class="crop-image">
+                    <h3>Cotton Farming</h3>
+                </div>
+                <div class="practice-body">
+                    <p><strong>Best practices for cotton cultivation:</strong></p>
+                    <div class="practice-tips">
+                        <h6><i class="bi bi-bug"></i> Pest Management</h6>
+                        <ul>
+                            <li>Use Bt cotton varieties for bollworm control</li>
+                            <li>Monitor for whitefly and aphids regularly</li>
+                            <li>Apply integrated pest management (IPM)</li>
+                        </ul>
+                    </div>
+                    <div class="practice-tips">
+                        <h6><i class="bi bi-droplet"></i> Water Management</h6>
+                        <ul>
+                            <li>Drip irrigation is most efficient</li>
+                            <li>Critical irrigation at flowering and boll formation</li>
+                            <li>Avoid water stress during boll development</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Maize Practices -->
+        <div class="col-md-6 mb-4" data-category="soil harvest">
+            <div class="practice-card">
+                <div class="practice-header">
+                    <img src="{{ url_for('static', filename='images/maize.png') }}" alt="Maize" class="crop-image">
+                    <h3>Maize Farming</h3>
+                </div>
+                <div class="practice-body">
+                    <p><strong>Best practices for maize cultivation:</strong></p>
+                    <div class="practice-tips">
+                        <h6><i class="bi bi-tree"></i> Soil Preparation</h6>
+                        <ul>
+                            <li>Deep plowing to 20-25 cm depth</li>
+                            <li>Apply 2-3 tons of FYM per hectare</li>
+                            <li>Maintain soil pH between 6.0-7.5</li>
+                        </ul>
+                    </div>
+                    <div class="practice-tips">
+                        <h6><i class="bi bi-calendar-check"></i> Harvesting</h6>
+                        <ul>
+                            <li>Harvest when moisture content is 20-25%</li>
+                            <li>Dry to 12-14% moisture for storage</li>
+                            <li>Store in well-ventilated conditions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sugarcane Practices -->
+        <div class="col-md-6 mb-4" data-category="irrigation harvest">
+            <div class="practice-card">
+                <div class="practice-header">
+                    <img src="{{ url_for('static', filename='images/sugarcane.png') }}" alt="Sugarcane" class="crop-image">
+                    <h3>Sugarcane Farming</h3>
+                </div>
+                <div class="practice-body">
+                    <p><strong>Best practices for sugarcane cultivation:</strong></p>
+                    <div class="practice-tips">
+                        <h6><i class="bi bi-droplet"></i> Irrigation</h6>
+                        <ul>
+                            <li>Furrow irrigation is most suitable</li>
+                            <li>Critical stages: Germination, tillering, grand growth</li>
+                            <li>Stop irrigation 2-3 weeks before harvest</li>
+                        </ul>
+                    </div>
+                    <div class="practice-tips">
+                        <h6><i class="bi bi-calendar-check"></i> Harvesting</h6>
+                        <ul>
+                            <li>Harvest at 12-14 months age</li>
+                            <li>Cut close to ground level</li>
+                            <li>Transport to mill within 24 hours</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pulses Practices -->
+        <div class="col-md-6 mb-4" data-category="soil pest">
+            <div class="practice-card">
+                <div class="practice-header">
+                    <img src="{{ url_for('static', filename='images/lentil.png') }}" alt="Pulses" class="crop-image">
+                    <h3>Pulses Farming</h3>
+                </div>
+                <div class="practice-body">
+                    <p><strong>Best practices for pulses cultivation:</strong></p>
+                    <div class="practice-tips">
+                        <h6><i class="bi bi-tree"></i> Soil Management</h6>
+                        <ul>
+                            <li>Well-drained soil with good organic matter</li>
+                            <li>Apply Rhizobium culture for nitrogen fixation</li>
+                            <li>Maintain soil pH between 6.5-7.5</li>
+                        </ul>
+                    </div>
+                    <div class="practice-tips">
+                        <h6><i class="bi bi-bug"></i> Pest Control</h6>
+                        <ul>
+                            <li>Monitor for pod borer and aphids</li>
+                            <li>Use resistant varieties when available</li>
+                            <li>Apply neem-based pesticides</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const practicesContainer = document.getElementById('practicesContainer');
+    const practiceCards = document.querySelectorAll('.practice-card');
+
+    // Search functionality
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        filterPractices();
+    });
+
+    // Category filter
+    categoryFilter.addEventListener('change', function() {
+        filterPractices();
+    });
+
+    // Category buttons
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            categoryFilter.value = this.dataset.category;
+            filterPractices();
+        });
+    });
+
+    function filterPractices() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCategory = categoryFilter.value;
+
+        practiceCards.forEach(card => {
+            const cardContainer = card.closest('[data-category]');
+            const cardText = card.textContent.toLowerCase();
+            const cardCategories = cardContainer.dataset.category.split(' ');
+
+            const matchesSearch = searchTerm === '' || cardText.includes(searchTerm);
+            const matchesCategory = selectedCategory === '' || cardCategories.includes(selectedCategory);
+
+            if (matchesSearch && matchesCategory) {
+                cardContainer.style.display = 'block';
+            } else {
+                cardContainer.style.display = 'none';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,531 @@
+{% extends 'base.html' %}
+{% block title %}CropMate - Community{% endblock %}
+{% block extra_head %}
+    <style>
+        .community-card {
+            border: none;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-normal);
+            margin-bottom: var(--spacing-lg);
+            overflow: hidden;
+        }
+        
+        .community-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .community-header {
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: var(--spacing-lg);
+            text-align: center;
+        }
+        
+        .community-header h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .community-body {
+            padding: var(--spacing-lg);
+        }
+        
+        .story-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            border-left: 4px solid var(--success);
+            transition: var(--transition-normal);
+        }
+        
+        .story-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .story-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .story-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 600;
+            margin-right: var(--spacing-md);
+        }
+        
+        .story-info h6 {
+            margin: 0;
+            color: var(--dark-gray);
+            font-weight: 600;
+        }
+        
+        .story-info small {
+            color: var(--gray);
+        }
+        
+        .story-content {
+            color: var(--dark-gray);
+            line-height: 1.6;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .story-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+            color: var(--gray);
+            font-size: var(--font-size-sm);
+        }
+        
+        .story-stats span {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        .expert-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            text-align: center;
+            transition: var(--transition-normal);
+            border-top: 4px solid var(--info);
+        }
+        
+        .expert-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .expert-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient-info);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        .expert-name {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .expert-title {
+            color: var(--info);
+            font-weight: 500;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .expert-specialization {
+            background: var(--gradient-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .expert-specialization h6 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .expert-specialization p {
+            color: var(--gray);
+            margin: 0;
+            font-size: var(--font-size-sm);
+        }
+        
+        .expert-contact {
+            background: var(--gradient-primary);
+            color: var(--white);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+        
+        .expert-contact h6 {
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .contact-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-xs);
+            font-size: var(--font-size-sm);
+        }
+        
+        .contact-info i {
+            margin-right: var(--spacing-sm);
+            width: 16px;
+        }
+        
+        .forum-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            border-left: 4px solid var(--warning);
+        }
+        
+        .forum-header {
+            display: flex;
+            justify-content: between;
+            align-items: start;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .forum-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .forum-meta {
+            color: var(--gray);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .forum-content {
+            color: var(--dark-gray);
+            line-height: 1.6;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .forum-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+            color: var(--gray);
+            font-size: var(--font-size-sm);
+        }
+        
+        .forum-stats span {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        .search-section {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .search-input {
+            border: 2px solid var(--light-gray);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-size-lg);
+            width: 100%;
+            transition: var(--transition-fast);
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(46, 139, 87, 0.25);
+        }
+        
+        .filter-section {
+            background: var(--gradient-light);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .filter-btn {
+            background: var(--white);
+            border: 2px solid var(--primary-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            margin: var(--spacing-xs);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-weight: 500;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1><i class="bi bi-people"></i> Farmer Community</h1>
+        <p class="subtitle">Connect with fellow farmers, share experiences, and learn from success stories</p>
+    </div>
+
+    <div class="search-section">
+        <div class="row">
+            <div class="col-md-8">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search for stories, experts, or discussions...">
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="stories">Success Stories</option>
+                    <option value="experts">Expert Advice</option>
+                    <option value="forum">Community Forum</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-section">
+        <h5 class="mb-3"><i class="bi bi-funnel"></i> Filter Content</h5>
+        <div class="d-flex flex-wrap">
+            <button class="filter-btn active" data-filter="all">All Content</button>
+            <button class="filter-btn" data-filter="stories">Success Stories</button>
+            <button class="filter-btn" data-filter="experts">Expert Advice</button>
+            <button class="filter-btn" data-filter="forum">Community Forum</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Success Stories -->
+        <div class="col-md-8">
+            <h4 class="mb-4"><i class="bi bi-star"></i> Success Stories</h4>
+            
+            <div class="story-card" data-category="stories">
+                <div class="story-header">
+                    <div class="story-avatar">RK</div>
+                    <div class="story-info">
+                        <h6>Rajesh Kumar</h6>
+                        <small>Punjab • Progressive Farmer • 15 years experience</small>
+                    </div>
+                </div>
+                <div class="story-content">
+                    "Using CropMate's soil analysis and crop recommendation features, I optimized my rice cultivation. The precision farming approach helped me reduce input costs by 20% while increasing yield by 35%. The seasonal calendar is particularly helpful for timing operations."
+                </div>
+                <div class="story-stats">
+                    <span><i class="bi bi-heart"></i> 42 likes</span>
+                    <span><i class="bi bi-chat"></i> 15 comments</span>
+                    <span><i class="bi bi-share"></i> 8 shares</span>
+                </div>
+            </div>
+
+            <div class="story-card" data-category="stories">
+                <div class="story-header">
+                    <div class="story-avatar">SM</div>
+                    <div class="story-info">
+                        <h6>Sunita Mehta</h6>
+                        <small>Maharashtra • Organic Farmer • 10 years experience</small>
+                    </div>
+                </div>
+                <div class="story-content">
+                    "CropMate's profitability calculator helped me transition to organic farming. The market trends feature showed me the potential for organic cotton, and now I'm earning 40% more per acre while maintaining soil health. The community features connected me with other organic farmers."
+                </div>
+                <div class="story-stats">
+                    <span><i class="bi bi-heart"></i> 38 likes</span>
+                    <span><i class="bi bi-chat"></i> 22 comments</span>
+                    <span><i class="bi bi-share"></i> 12 shares</span>
+                </div>
+            </div>
+
+            <div class="story-card" data-category="stories">
+                <div class="story-header">
+                    <div class="story-avatar">AP</div>
+                    <div class="story-info">
+                        <h6>Amit Patel</h6>
+                        <small>Gujarat • Diversified Farmer • 18 years experience</small>
+                    </div>
+                </div>
+                <div class="story-content">
+                    "The crop comparison tool helped me diversify from traditional wheat to high-value crops like vegetables and spices. The location-based suitability analysis was crucial for my decision. My farm income has increased by 60% in the last two years."
+                </div>
+                <div class="story-stats">
+                    <span><i class="bi bi-heart"></i> 55 likes</span>
+                    <span><i class="bi bi-chat"></i> 18 comments</span>
+                    <span><i class="bi bi-share"></i> 9 shares</span>
+                </div>
+            </div>
+
+            <!-- Community Forum -->
+            <h4 class="mb-4 mt-5"><i class="bi bi-chat-dots"></i> Community Forum</h4>
+            
+            <div class="forum-card" data-category="forum">
+                <div class="forum-header">
+                    <div>
+                        <h5 class="forum-title">Best practices for organic farming</h5>
+                        <div class="forum-meta">Posted by <strong>Vikram Singh</strong> • 2 hours ago</div>
+                    </div>
+                </div>
+                <div class="forum-content">
+                    "I'm planning to switch to organic farming. Can anyone share their experience with organic fertilizers and pest control methods? What are the challenges I should be prepared for?"
+                </div>
+                <div class="forum-stats">
+                    <span><i class="bi bi-reply"></i> 15 replies</span>
+                    <span><i class="bi bi-eye"></i> 45 views</span>
+                    <span><i class="bi bi-heart"></i> 8 likes</span>
+                </div>
+            </div>
+
+            <div class="forum-card" data-category="forum">
+                <div class="forum-header">
+                    <div>
+                        <h5 class="forum-title">Water management during drought</h5>
+                        <div class="forum-meta">Posted by <strong>Priya Sharma</strong> • 5 hours ago</div>
+                    </div>
+                </div>
+                <div class="forum-content">
+                    "With the current water shortage in our region, what are the best water conservation techniques? I'm looking for practical solutions that don't require heavy investment."
+                </div>
+                <div class="forum-stats">
+                    <span><i class="bi bi-reply"></i> 22 replies</span>
+                    <span><i class="bi bi-eye"></i> 67 views</span>
+                    <span><i class="bi bi-heart"></i> 12 likes</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expert Advice -->
+        <div class="col-md-4">
+            <h4 class="mb-4"><i class="bi bi-person-badge"></i> Expert Advisors</h4>
+            
+            <div class="expert-card" data-category="experts">
+                <div class="expert-avatar">RC</div>
+                <h5 class="expert-name">Dr. Ramesh Chand</h5>
+                <div class="expert-title">Member, NITI Aayog</div>
+                <div class="expert-specialization">
+                    <h6>Specialization</h6>
+                    <p>Agricultural Economics, Policy Research, Rural Development</p>
+                </div>
+                <div class="expert-contact">
+                    <h6>Contact</h6>
+                    <div class="contact-info">
+                        <i class="bi bi-building"></i>
+                        <span>NITI Aayog, New Delhi</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-envelope"></i>
+                        <span>Contact through NITI Aayog</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="expert-card" data-category="experts">
+                <div class="expert-avatar">TM</div>
+                <h5 class="expert-name">Dr. Trilochan Mohapatra</h5>
+                <div class="expert-title">Former DG, ICAR</div>
+                <div class="expert-specialization">
+                    <h6>Specialization</h6>
+                    <p>Plant Breeding, Crop Improvement, Agricultural Research</p>
+                </div>
+                <div class="expert-contact">
+                    <h6>Contact</h6>
+                    <div class="contact-info">
+                        <i class="bi bi-building"></i>
+                        <span>ICAR, New Delhi</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-envelope"></i>
+                        <span>Contact through ICAR</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="expert-card" data-category="experts">
+                <div class="expert-avatar">HP</div>
+                <h5 class="expert-name">Dr. Himanshu Pathak</h5>
+                <div class="expert-title">Director, ICAR-NRRI</div>
+                <div class="expert-specialization">
+                    <h6>Specialization</h6>
+                    <p>Climate Change, Rice Research, Sustainable Agriculture</p>
+                </div>
+                <div class="expert-contact">
+                    <h6>Contact</h6>
+                    <div class="contact-info">
+                        <i class="bi bi-building"></i>
+                        <span>ICAR-NRRI, Cuttack</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-envelope"></i>
+                        <span>Contact through ICAR-NRRI</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const contentCards = document.querySelectorAll('.story-card, .expert-card, .forum-card');
+
+    // Search functionality
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        filterContent();
+    });
+
+    // Category filter
+    categoryFilter.addEventListener('change', function() {
+        filterContent();
+    });
+
+    // Filter buttons
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            filterContent();
+        });
+    });
+
+    function filterContent() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCategory = categoryFilter.value;
+        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+
+        contentCards.forEach(card => {
+            const cardText = card.textContent.toLowerCase();
+            const cardCategory = card.dataset.category;
+
+            const matchesSearch = searchTerm === '' || cardText.includes(searchTerm);
+            const matchesCategory = selectedCategory === '' || cardCategory === selectedCategory;
+            const matchesFilter = activeFilter === 'all' || cardCategory === activeFilter;
+
+            if (matchesSearch && matchesCategory && matchesFilter) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,502 @@
+{% extends 'base.html' %}
+{% block title %}CropMate - Smart Recommendation{% endblock %}
+{% block extra_head %}
+    <style>
+        .recommendation-form {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .form-section {
+            background: var(--light-gray);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        .result-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: var(--spacing-xl);
+            margin-top: var(--spacing-lg);
+            border: 2px solid var(--primary-light);
+        }
+        
+        .crop-result {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .crop-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .crop-details h3 {
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .suitability-score {
+            font-size: 2rem;
+            font-weight: 700;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            display: inline-block;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .score-excellent { 
+            background: linear-gradient(135deg, #D4EDDA 0%, #C3E6CB 100%);
+            color: var(--success);
+        }
+        
+        .score-good { 
+            background: linear-gradient(135deg, #FFF3CD 0%, #FFEAA7 100%);
+            color: var(--warning);
+        }
+        
+        .score-fair { 
+            background: linear-gradient(135deg, #F8D7DA 0%, #F5C6CB 100%);
+            color: var(--danger);
+        }
+        
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+        
+        .breakdown-item {
+            background: var(--light-gray);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+        
+        .breakdown-label {
+            font-weight: 500;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .breakdown-value {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .auto-detect-btn {
+            background: var(--gradient-secondary);
+            color: var(--white);
+            border: none;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            transition: var(--transition-fast);
+        }
+        
+        .auto-detect-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .submit-btn {
+            background: var(--gradient-primary);
+            color: var(--white);
+            border: none;
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            transition: var(--transition-fast);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1><i class="bi bi-lightbulb"></i> Smart Crop Recommendation</h1>
+        <p class="subtitle">Get AI-powered crop suggestions based on your soil conditions, climate, and location</p>
+    </div>
+
+    <div class="recommendation-form">
+        <form id="recommendForm">
+            <!-- Soil & Weather Input -->
+            <div class="form-section">
+                <h4 class="section-title">
+                    <i class="bi bi-droplet-half"></i> Soil & Weather Conditions
+                </h4>
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label for="Nitrogen" class="form-label">Nitrogen (N)</label>
+                        <input type="number" class="form-control" id="Nitrogen" name="Nitrogen" min="0" max="140" step="0.1" placeholder="0-140">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="Phosporus" class="form-label">Phosphorus (P)</label>
+                        <input type="number" class="form-control" id="Phosporus" name="Phosporus" min="0" max="140" step="0.1" placeholder="0-140">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="Potassium" class="form-label">Potassium (K)</label>
+                        <input type="number" class="form-control" id="Potassium" name="Potassium" min="0" max="200" step="0.1" placeholder="0-200">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="pH" class="form-label">pH Level</label>
+                        <input type="number" class="form-control" id="pH" name="pH" min="3" max="10" step="0.01" placeholder="3-10">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="Temperature" class="form-label">Temperature (°C)</label>
+                        <input type="number" class="form-control" id="Temperature" name="Temperature" min="0" max="50" step="0.1" placeholder="0-50">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="Humidity" class="form-label">Humidity (%)</label>
+                        <input type="number" class="form-control" id="Humidity" name="Humidity" min="0" max="100" step="0.1" placeholder="0-100">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="Rainfall" class="form-label">Rainfall (mm)</label>
+                        <input type="number" class="form-control" id="Rainfall" name="Rainfall" min="0" max="4000" step="0.1" placeholder="0-4000">
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="button" class="auto-detect-btn" id="autoDetectBtn">
+                        <i class="bi bi-geo-alt"></i> Auto Detect Location & Weather
+                    </button>
+                </div>
+            </div>
+
+            <!-- Location & Season -->
+            <div class="form-section">
+                <h4 class="section-title">
+                    <i class="bi bi-geo"></i> Location & Season
+                </h4>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="stateSelect" class="form-label">State</label>
+                        <select id="stateSelect" name="state" class="form-select">
+                            <option value="">Auto/Select State</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="districtSelect" class="form-label">District</label>
+                        <select id="districtSelect" name="district" class="form-select">
+                            <option value="">Auto/Select District</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="seasonSelect" class="form-label">Season</label>
+                        <select id="seasonSelect" name="season" class="form-select">
+                            <option value="">Auto/All Seasons</option>
+                            <option value="kharif">Kharif (June-Oct)</option>
+                            <option value="rabi">Rabi (Nov-Mar)</option>
+                            <option value="zaid">Zaid (Mar-Jun)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Area & Cost (Optional) -->
+            <div class="form-section">
+                <h4 class="section-title">
+                    <i class="bi bi-cash-coin"></i> Area & Cost (Optional)
+                </h4>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="area" class="form-label">Area (hectares)</label>
+                        <input type="number" class="form-control" id="area" name="area" min="0" step="0.01" placeholder="Enter area">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="costs" class="form-label">Estimated Costs (₹)</label>
+                        <input type="number" class="form-control" id="costs" name="costs" min="0" step="0.01" placeholder="Enter costs">
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="submit-btn">
+                    <i class="bi bi-lightning-charge"></i> Get Smart Recommendation
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Section -->
+    <div id="recommendationResults"></div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// --- State & District Data ---
+let stateDistricts = {};
+
+// --- Load States on Page Load ---
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/states')
+        .then(res => res.json())
+        .then(states => {
+            const stateSelect = document.getElementById('stateSelect');
+            states.forEach(state => {
+                const opt = document.createElement('option');
+                opt.value = state;
+                opt.textContent = state;
+                stateSelect.appendChild(opt);
+            });
+        });
+    
+    // Load districts when state changes
+    document.getElementById('stateSelect').addEventListener('change', function() {
+        const state = this.value;
+        loadDistricts(state);
+    });
+    
+    // Auto-detect button
+    document.getElementById('autoDetectBtn').addEventListener('click', autoDetectAll);
+    
+    // Form submit
+    document.getElementById('recommendForm').addEventListener('submit', handleRecommendationSubmit);
+});
+
+function loadDistricts(state) {
+    const districtSelect = document.getElementById('districtSelect');
+    districtSelect.innerHTML = '<option value="">Auto/Select District</option>';
+    if (!state) return;
+    
+    fetch(`/api/suitability/${encodeURIComponent(state)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.state_info && data.state_info.districts) {
+                data.state_info.districts.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d;
+                    opt.textContent = d;
+                    districtSelect.appendChild(opt);
+                });
+                // Auto-select if only one district
+                if (data.state_info.districts.length === 1) {
+                    districtSelect.value = data.state_info.districts[0];
+                }
+            }
+        });
+}
+
+// --- Auto Detect Location & Weather ---
+function autoDetectAll() {
+    const btn = document.getElementById('autoDetectBtn');
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Detecting...';
+    btn.disabled = true;
+    
+    fetch('/api/auto-detect')
+        .then(res => res.json())
+        .then(async (data) => {
+            // Fill state first
+            const stateSelect = document.getElementById('stateSelect');
+            const districtSelect = document.getElementById('districtSelect');
+            const detectedState = data.nearest_state || (data.location && (data.location.region || data.location.state));
+            const detectedDistrict = data.location && (data.location.district || data.location.city);
+
+            if (detectedState) {
+                stateSelect.value = detectedState;
+                // Load districts for the state and then try to select detected district
+                await new Promise(resolve => {
+                    // hook into loadDistricts completion by polling for options
+                    loadDistricts(detectedState);
+                    const start = Date.now();
+                    const timer = setInterval(() => {
+                        if (districtSelect.options.length > 1 || Date.now() - start > 3000) {
+                            clearInterval(timer);
+                            resolve();
+                        }
+                    }, 100);
+                });
+                if (detectedDistrict) {
+                    const opts = Array.from(districtSelect.options);
+                    let match = opts.find(o => o.textContent.trim().toLowerCase() === detectedDistrict.trim().toLowerCase());
+                    if (match) {
+                        districtSelect.value = match.value;
+                    }
+                }
+            }
+
+            // Auto-select season
+            if (data.current_season) {
+                const seasonSelect = document.getElementById('seasonSelect');
+                seasonSelect.value = data.current_season;
+            }
+            
+            // Fill weather
+            if (data.weather) {
+                document.getElementById('Temperature').value = Math.round(data.weather.temperature);
+                document.getElementById('Humidity').value = Math.round(data.weather.humidity);
+            }
+            
+            // Show success message
+            const locText = detectedDistrict ? `${detectedDistrict}, ${detectedState}` : detectedState || 'your area';
+            showAlert(`Detected location: ${locText}. Weather filled.`, 'success');
+        })
+        .catch(error => {
+            console.error('Auto-detect error:', error);
+            showAlert('Could not detect location automatically. Please fill in the details manually.', 'warning');
+        })
+        .finally(() => {
+            btn.innerHTML = '<i class="bi bi-geo-alt"></i> Auto Detect Location & Weather';
+            btn.disabled = false;
+        });
+}
+
+// --- Handle Form Submission ---
+function handleRecommendationSubmit(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Validate required fields
+    const requiredFields = ['Nitrogen', 'Phosporus', 'Potassium', 'Temperature', 'Humidity', 'pH', 'Rainfall'];
+    const missingFields = requiredFields.filter(field => !data[field] || data[field] === '');
+    
+    if (missingFields.length > 0) {
+        showAlert('Please fill in all required soil and weather fields.', 'danger');
+        return;
+    }
+    
+    // Show loading
+    const submitBtn = document.querySelector('.submit-btn');
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Analyzing...';
+    submitBtn.disabled = true;
+    
+    // Send request
+    fetch('/api/smart-recommend', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(result => {
+        if (result.error) {
+            showAlert(result.error, 'danger');
+        } else {
+            displayResults(result.top_crops);
+        }
+    })
+    .catch(error => {
+        console.error('Recommendation error:', error);
+        showAlert('An error occurred while getting recommendations. Please try again.', 'danger');
+    })
+    .finally(() => {
+        submitBtn.innerHTML = '<i class="bi bi-lightning-charge"></i> Get Smart Recommendation';
+        submitBtn.disabled = false;
+    });
+}
+
+// --- Display Results ---
+function displayResults(crops) {
+    const resultsDiv = document.getElementById('recommendationResults');
+    
+    let html = '<div class="result-card fade-in-up">';
+    html += '<h2 class="text-center mb-4"><i class="bi bi-check-circle"></i> Your Smart Recommendations</h2>';
+    
+    crops.forEach((crop, index) => {
+        const rank = index + 1;
+        const rankIcon = rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉';
+        
+        html += `
+            <div class="crop-result">
+                <img src="/static/images/${crop.image}" alt="${crop.crop}" class="crop-image">
+                <div class="crop-details flex-grow-1">
+                    <h3>${rankIcon} ${crop.crop}</h3>
+                    <div class="suitability-score score-excellent">${crop.total_score}/100</div>
+                    <p>${crop.description}</p>
+                    
+                    <div class="breakdown-grid">
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Soil Score</div>
+                            <div class="breakdown-value">${crop.breakdown.soil_score}</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Local Score</div>
+                            <div class="breakdown-value">${crop.breakdown.local_score}</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Weather Score</div>
+                            <div class="breakdown-value">${crop.breakdown.weather_score}</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Season Score</div>
+                            <div class="breakdown-value">${crop.breakdown.season_score}</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-label">Profit Score</div>
+                            <div class="breakdown-value">${crop.breakdown.profit_score}</div>
+                        </div>
+                    </div>
+                    
+                    ${crop.estimated_profit ? `
+                        <div class="mt-3">
+                            <strong>Estimated Profit:</strong> ₹${crop.estimated_profit.toLocaleString()}
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+        
+        if (index < crops.length - 1) {
+            html += '<hr class="my-4">';
+        }
+    });
+    
+    html += '</div>';
+    resultsDiv.innerHTML = html;
+    
+    // Scroll to results
+    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+}
+
+// --- Show Alert ---
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    const container = document.querySelector('.container');
+    container.insertBefore(alertDiv, container.firstChild);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+</script>
+{% endblock %}
