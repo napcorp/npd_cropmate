@@ -1,0 +1,521 @@
+{% extends 'base.html' %}
+{% block title %}CropMate - Market Trends{% endblock %}
+{% block extra_head %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .market-section {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .price-card {
+            background: var(--gradient-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .price-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .crop-name {
+            font-weight: 600;
+            color: var(--dark-gray);
+            font-size: var(--font-size-lg);
+        }
+        
+        .price-value {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: var(--font-size-xl);
+        }
+        
+        .trend-indicator {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+        }
+        
+        .trend-up {
+            background: #D4EDDA;
+            color: var(--success);
+        }
+        
+        .trend-down {
+            background: #F8D7DA;
+            color: var(--danger);
+        }
+        
+        .trend-stable {
+            background: #FFF3CD;
+            color: var(--warning);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: var(--spacing-md) 0;
+        }
+        
+        .market-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: var(--font-size-sm);
+        }
+        
+        .filter-section {
+            background: var(--gradient-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .filter-btn {
+            background: var(--white);
+            border: 2px solid var(--primary-color);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            margin: 2px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-size: var(--font-size-sm);
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1><i class="bi bi-graph-up"></i> Market Trends</h1>
+        <p class="subtitle">Stay updated with current crop prices and market insights</p>
+        <div class="location-info text-muted">
+            <i class="bi bi-geo-alt"></i> 
+            <span>Loading location-based prices...</span>
+        </div>
+    </div>
+
+    <!-- Market Statistics -->
+    <div class="market-stats">
+        <div class="stat-card">
+            <div class="stat-number">22</div>
+            <div class="stat-label">Crops Tracked</div>
+            </div>
+        <div class="stat-card">
+            <div class="stat-number">₹45K</div>
+            <div class="stat-label">Avg Price/Quintal</div>
+            </div>
+        <div class="stat-card">
+            <div class="stat-number">+12%</div>
+            <div class="stat-label">Price Change (30 days)</div>
+            </div>
+        <div class="stat-card">
+            <div class="stat-number">15</div>
+            <div class="stat-label">Market Centers</div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <h5 class="mb-3"><i class="bi bi-funnel"></i> Filter by Category</h5>
+        <div class="d-flex flex-wrap">
+            <button class="filter-btn active" data-category="all">All Crops</button>
+            <button class="filter-btn" data-category="cereals">Cereals</button>
+            <button class="filter-btn" data-category="pulses">Pulses</button>
+            <button class="filter-btn" data-category="fruits">Fruits</button>
+            <button class="filter-btn" data-category="vegetables">Vegetables</button>
+        </div>
+    </div>
+
+    <!-- Price Trends -->
+    <div class="market-section">
+        <h4 class="mb-4"><i class="bi bi-currency-rupee"></i> Current Market Prices</h4>
+        
+        <div class="price-card" data-category="cereals">
+            <div class="price-header">
+                <span class="crop-name">Rice</span>
+                <span class="price-value">₹2,850/quintal</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">Last updated: Today</small>
+                <span class="trend-indicator trend-up">+5.2%</span>
+            </div>
+        </div>
+
+        <div class="price-card" data-category="cereals">
+            <div class="price-header">
+                <span class="crop-name">Wheat</span>
+                <span class="price-value">₹2,150/quintal</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">Last updated: Today</small>
+                <span class="trend-indicator trend-down">-2.1%</span>
+            </div>
+        </div>
+
+        <div class="price-card" data-category="cereals">
+            <div class="price-header">
+                <span class="crop-name">Maize</span>
+                <span class="price-value">₹1,850/quintal</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">Last updated: Today</small>
+                <span class="trend-indicator trend-up">+3.4%</span>
+            </div>
+        </div>
+
+        <div class="price-card" data-category="pulses">
+            <div class="price-header">
+                <span class="crop-name">Lentil</span>
+                <span class="price-value">₹6,200/quintal</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">Last updated: Today</small>
+                <span class="trend-indicator trend-stable">0.0%</span>
+        </div>
+    </div>
+
+        <div class="price-card" data-category="pulses">
+            <div class="price-header">
+                <span class="crop-name">Chickpea</span>
+                <span class="price-value">₹5,800/quintal</span>
+                </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">Last updated: Today</small>
+                <span class="trend-indicator trend-up">+1.8%</span>
+            </div>
+        </div>
+
+        <div class="price-card" data-category="fruits">
+            <div class="price-header">
+                <span class="crop-name">Mango</span>
+                <span class="price-value">₹45/kg</span>
+                    </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">Last updated: Today</small>
+                <span class="trend-indicator trend-up">+8.5%</span>
+            </div>
+        </div>
+
+        <div class="price-card" data-category="fruits">
+            <div class="price-header">
+                <span class="crop-name">Banana</span>
+                <span class="price-value">₹35/kg</span>
+                </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">Last updated: Today</small>
+                <span class="trend-indicator trend-down">-1.2%</span>
+            </div>
+        </div>
+
+        <div class="price-card" data-category="vegetables">
+            <div class="price-header">
+                <span class="crop-name">Tomato</span>
+                <span class="price-value">₹65/kg</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">Last updated: Today</small>
+                <span class="trend-indicator trend-up">+12.3%</span>
+                    </div>
+                </div>
+    </div>
+
+    <!-- Price Chart -->
+    <div class="market-section">
+        <h4 class="mb-4"><i class="bi bi-graph-up"></i> Price Trends (Last 30 Days)</h4>
+        <div class="chart-container">
+            <canvas id="priceChart"></canvas>
+            </div>
+        </div>
+
+    <!-- Market Insights -->
+    <div class="market-section">
+        <h4 class="mb-4"><i class="bi bi-lightbulb"></i> Market Insights</h4>
+            <div class="row">
+            <div class="col-md-6">
+                <div class="alert alert-info">
+                    <h6><i class="bi bi-info-circle"></i> Rice Prices Rising</h6>
+                    <p class="mb-0">Rice prices have increased by 5.2% this week due to strong export demand and reduced supply from key producing regions.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="alert alert-warning">
+                    <h6><i class="bi bi-exclamation-triangle"></i> Wheat Price Decline</h6>
+                    <p class="mb-0">Wheat prices are down 2.1% due to increased production and government procurement policies.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing market page...');
+    let currentLocation = null;
+    let marketData = null;
+    
+    // Auto-detect location and load market data
+    setTimeout(() => {
+        console.log('Starting location-based price loading...');
+        loadLocationBasedPrices();
+    }, 100);
+    
+    // Filter functionality
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const priceCards = document.querySelectorAll('.price-card');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            const category = this.dataset.category;
+            
+            priceCards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    window.loadLocationBasedPrices = async function() {
+        try {
+            // Show loading state
+            showLoadingState();
+            
+            // Use backend IP-based auto-detect (no browser permission)
+            let auto = null;
+            try {
+                const autoResp = await fetch('/api/auto-detect');
+                auto = await autoResp.json();
+            } catch (e) {
+                console.log('Auto-detect API failed, falling back to Delhi');
+                auto = { location: { lat: 28.6139, lon: 77.2090, city: 'New Delhi', region: 'Delhi', district: 'New Delhi' }, nearest_state: 'Delhi' };
+            }
+
+            const location = {
+                lat: auto.location.lat,
+                lon: auto.location.lon,
+                city: auto.location.city || 'Detected Location',
+                state: auto.location.region || auto.nearest_state || 'Unknown',
+                district: auto.location.district || null
+            };
+            currentLocation = location;
+            
+            // Fetch market prices for the location
+            console.log(`Fetching prices for: ${location.city}, ${location.state}`);
+            const apiUrl = `/api/market/prices?lat=${location.lat}&lon=${location.lon}&city=${location.city}&state=${location.state}`;
+            console.log('API URL:', apiUrl);
+            
+            const response = await fetch(apiUrl);
+            console.log('Response status:', response.status);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('Received market data:', data);
+            
+            if (data.prices && data.prices.length > 0) {
+                console.log(`Successfully received ${data.prices.length} market prices`);
+                marketData = data.prices;
+                updateMarketDisplay(data);
+                updatePriceChart(data.prices);
+            } else {
+                console.error('No market data received:', data);
+                showErrorState();
+            }
+            
+        } catch (error) {
+            console.error('Error loading location-based prices:', error);
+            showErrorState();
+        }
+    };
+    
+    async function getUserLocation() {
+        return new Promise((resolve, reject) => {
+            // Use a timeout to avoid hanging
+            const timeout = setTimeout(() => {
+                reject(new Error('Location detection timeout'));
+            }, 5000);
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        clearTimeout(timeout);
+                        resolve({
+                            lat: position.coords.latitude,
+                            lon: position.coords.longitude,
+                            city: 'Detected Location',
+                            state: 'Auto-detected'
+                        });
+                    },
+                    (error) => {
+                        clearTimeout(timeout);
+                        console.log('Geolocation failed:', error);
+                        reject(error);
+                    },
+                    {
+                        timeout: 5000,
+                        enableHighAccuracy: false,
+                        maximumAge: 300000 // 5 minutes
+                    }
+                );
+            } else {
+                clearTimeout(timeout);
+                reject(new Error('Geolocation not supported'));
+            }
+        });
+    }
+    
+    function updateMarketDisplay(data) {
+        console.log('Updating market display with data:', data);
+        
+        // Update location info
+        const locationInfo = document.querySelector('.location-info');
+        if (locationInfo) {
+            locationInfo.innerHTML = `
+                <i class="bi bi-geo-alt"></i> 
+                Prices for ${data.location.city}, ${data.location.state}
+            `;
+        }
+        
+        // Update price cards with real data
+        const priceCards = document.querySelectorAll('.price-card');
+        console.log(`Found ${priceCards.length} price cards`);
+        
+        data.prices.forEach((priceData, index) => {
+            console.log(`Updating price card ${index} with data:`, priceData);
+            if (priceCards[index]) {
+                const priceCard = priceCards[index];
+                const priceValue = priceCard.querySelector('.price-value');
+                const trendIndicator = priceCard.querySelector('.trend-indicator');
+                
+                console.log(`Price card ${index} - priceValue:`, priceValue, 'trendIndicator:', trendIndicator);
+                
+                if (priceValue) {
+                    priceValue.textContent = `₹${priceData.price}/${priceData.unit}`;
+                }
+                
+                if (trendIndicator) {
+                    trendIndicator.textContent = `${priceData.change_percent > 0 ? '+' : ''}${priceData.change_percent}%`;
+                    trendIndicator.className = `trend-indicator trend-${priceData.trend}`;
+                }
+            } else {
+                console.log(`No price card found at index ${index}`);
+        }
+    });
+}
+
+    function updatePriceChart(prices) {
+        const ctx = document.getElementById('priceChart').getContext('2d');
+        
+        // Get top 3 crops for chart
+        const topCrops = prices.slice(0, 3);
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                datasets: topCrops.map((crop, index) => {
+                    const colors = ['#2E8B57', '#FF6B35', '#4ECDC4'];
+                    const basePrice = crop.price;
+                    const variation = 0.05; // 5% variation
+                    
+                    return {
+                        label: `${crop.crop} (₹/${crop.unit})`,
+                        data: [
+                            basePrice * (1 - variation * 3),
+                            basePrice * (1 - variation * 2),
+                            basePrice * (1 - variation),
+                            basePrice
+                        ],
+                        borderColor: colors[index],
+                        backgroundColor: colors[index] + '20',
+                        tension: 0.4
+                    };
+                })
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Price (₹)'
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    window.showLoadingState = function() {
+        console.log('Showing loading state...');
+        const locationInfo = document.querySelector('.location-info span');
+        if (locationInfo) {
+            locationInfo.textContent = 'Detecting your location and fetching prices...';
+        }
+    };
+    
+    window.showErrorState = function() {
+        console.log('Showing error state...');
+        const locationInfo = document.querySelector('.location-info span');
+        if (locationInfo) {
+            locationInfo.innerHTML = 'Unable to load location-based prices. ' +
+                '<button class="btn btn-sm btn-primary ms-2" onclick="loadLocationBasedPrices()">Retry</button>';
+        }
+    };
+});
+</script>
+{% endblock %}

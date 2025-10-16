@@ -1,0 +1,400 @@
+{% extends 'base.html' %}
+{% block title %}CropMate - Smart Farming Solutions{% endblock %}
+{% block extra_head %}
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #2E8B57 0%, #3CB371 50%, #4ECDC4 100%);
+            color: var(--white);
+            padding: var(--spacing-xl) 0;
+            margin-bottom: var(--spacing-xl);
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+        
+        .hero-section .container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: var(--spacing-md);
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            color: var(--white);
+        }
+        
+        .hero-subtitle {
+            font-size: var(--font-size-xl);
+            opacity: 0.95;
+            margin-bottom: var(--spacing-lg);
+            color: var(--white);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .hero-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-md);
+            color: var(--white);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .hero-illustration {
+            width: 120px;
+            height: 120px;
+            display: inline-block;
+            margin-bottom: var(--spacing-md);
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.08);
+        }
+        .hero-illustration img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .stats-section {
+            background: var(--gradient-light);
+            padding: var(--spacing-xl) 0;
+            margin: var(--spacing-xl) 0;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: var(--spacing-md);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: block;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stat-label {
+            color: var(--dark-gray);
+            font-weight: 600;
+            font-size: var(--font-size-base);
+        }
+        
+        /* Auto-location feature styling */
+        .auto-location-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .location-status {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .location-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .weather-info {
+            background: var(--gradient-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-sm);
+        }
+        
+        .weather-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-xs) 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .weather-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: var(--font-size-lg);
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section section-accent" aria-label="Welcome section">
+    <div class="container text-center">
+        <div class="hero-illustration" aria-hidden="true">
+            <img src="{{ url_for('static', filename='images/flower.png') }}" alt="Flower illustration" onerror="this.style.display='none'; this.nextElementSibling && (this.nextElementSibling.style.display='inline-block');">
+            <i class="bi bi-flower1" style="display:none; font-size:4rem; color:var(--white); text-shadow:0 2px 4px rgba(0,0,0,0.3);"></i>
+        </div>
+        <h1 class="hero-title">Welcome to CropMate</h1>
+        <p class="hero-subtitle">Your all-in-one digital companion for smarter, more profitable, and sustainable farming</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/recommend" class="btn btn-light btn-lg" aria-label="Get Started with Crop Recommendation">
+                <i class="bi bi-lightning-charge"></i> Get Started
+            </a>
+            <a href="/compare" class="btn btn-outline-light btn-lg" aria-label="Compare Crops">
+                <i class="bi bi-bar-chart"></i> Compare Crops
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="stats-section section" aria-label="Platform statistics">
+        <div class="row justify-content-center align-items-stretch">
+            <div class="col-md-3 col-6 mb-4 mb-md-0">
+                <div class="stat-item">
+                    <span class="stat-number">22+</span>
+                    <div class="stat-label">Crop Types</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4 mb-md-0">
+                <div class="stat-item">
+                    <span class="stat-number">28</span>
+                    <div class="stat-label">Indian States</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4 mb-md-0">
+                <div class="stat-item">
+                    <span class="stat-number">8</span>
+                    <div class="stat-label">Union Territories</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <div class="stat-label">Support</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="feature-grid section" aria-label="Key features">
+        <div class="feature-card fade-in-up">
+            <div class="feature-icon">
+                <i class="bi bi-search"></i>
+            </div>
+            <h4>Smart Crop Recommendation</h4>
+            <p>Get AI-powered crop suggestions based on your soil conditions, climate, and location. Maximize your yield and reduce risk.</p>
+            <a href="/recommend" class="btn btn-primary" aria-label="Get Recommendation">
+                <i class="bi bi-arrow-right"></i> Get Recommendation
+            </a>
+        </div>
+
+        <div class="feature-card fade-in-up">
+            <div class="feature-icon">
+                <i class="bi bi-bar-chart"></i>
+            </div>
+            <h4>Compare Crops</h4>
+            <p>Compare two crops side-by-side for yield, price, water needs, and more. Make informed decisions for your farm.</p>
+            <a href="/compare" class="btn btn-primary" aria-label="Compare Now">
+                <i class="bi bi-arrow-right"></i> Compare Now
+            </a>
+        </div>
+
+        <div class="feature-card fade-in-up">
+            <div class="feature-icon">
+                <i class="bi bi-cash-coin"></i>
+            </div>
+            <h4>Profitability Calculator</h4>
+            <p>Estimate your profit for any crop by entering your area and costs. Plan your finances smartly and optimize returns.</p>
+            <a href="/profitability" class="btn btn-primary" aria-label="Calculate Profit">
+                <i class="bi bi-arrow-right"></i> Calculate Profit
+            </a>
+        </div>
+
+        <div class="feature-card fade-in-up">
+            <div class="feature-icon">
+                <i class="bi bi-calendar-event"></i>
+            </div>
+            <h4>Seasonal Calendar</h4>
+            <p>View the best sowing, growing, and harvesting times for each crop in your region. Never miss the perfect timing.</p>
+            <a href="/calendar" class="btn btn-primary" aria-label="View Calendar">
+                <i class="bi bi-arrow-right"></i> View Calendar
+            </a>
+        </div>
+
+        <div class="feature-card fade-in-up">
+            <div class="feature-icon">
+                <i class="bi bi-lightbulb"></i>
+            </div>
+            <h4>Best Practices</h4>
+            <p>Learn proven farming practices and how to avoid common problems for each crop. Improve your farming skills.</p>
+            <a href="/practices" class="btn btn-primary" aria-label="Learn More">
+                <i class="bi bi-arrow-right"></i> Learn More
+            </a>
+        </div>
+
+        <div class="feature-card fade-in-up">
+            <div class="feature-icon">
+                <i class="bi bi-geo-alt"></i>
+            </div>
+            <h4>Local Suitability</h4>
+            <p>Find out which crops are best for your state or district based on local conditions and climate patterns.</p>
+            <a href="/suitability" class="btn btn-primary">
+                <i class="bi bi-arrow-right"></i> Check Suitability
+            </a>
+        </div>
+
+        <div class="feature-card fade-in-up">
+            <div class="feature-icon">
+                <i class="bi bi-bank"></i>
+            </div>
+            <h4>Schemes & Support</h4>
+            <p>Access government schemes, subsidies, and support contacts for your crops. Get the help you deserve.</p>
+            <a href="/schemes" class="btn btn-primary">
+                <i class="bi bi-arrow-right"></i> See Schemes
+            </a>
+        </div>
+
+        <div class="feature-card fade-in-up">
+            <div class="feature-icon">
+                <i class="bi bi-graph-up"></i>
+            </div>
+            <h4>Market Trends</h4>
+            <p>View recent market price trends for each crop to help you decide when to sell for maximum profit.</p>
+            <a href="/market" class="btn btn-primary">
+                <i class="bi bi-arrow-right"></i> View Trends
+            </a>
+        </div>
+
+        
+    </div>
+
+    <div class="text-center mt-5">
+        <div class="card">
+            <div class="card-body">
+                <h3>Ready to Transform Your Farming?</h3>
+                <p class="mb-4">Join thousands of farmers who are already using CropMate to improve their yields and profits.</p>
+                <a href="/recommend" class="btn btn-success btn-lg">
+                    <i class="bi bi-rocket"></i> Start Your Journey
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Add animation delay to feature cards
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.feature-card');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+    });
+    
+    // Auto-detect location on page load
+    detectLocation();
+});
+
+// Auto-location functionality
+async function detectLocation() {
+    const locationCard = document.getElementById('autoLocationCard');
+    const locationText = document.getElementById('locationText');
+    const weatherInfo = document.getElementById('weatherInfo');
+    const weatherDetails = document.getElementById('weatherDetails');
+    
+    try {
+        locationText.textContent = 'Detecting your location...';
+        locationCard.style.display = 'block';
+        
+        const response = await fetch('/api/auto-detect');
+        const data = await response.json();
+        
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        
+        // Update location text
+        const location = data.location;
+        const nearestState = data.nearest_state;
+        const distance = data.distance_km;
+        
+        locationText.innerHTML = `
+            <strong>${location.city}, ${location.region}</strong><br>
+            <small>Nearest Indian State: ${nearestState} (${distance.toFixed(1)} km away)</small>
+        `;
+        
+        // Show weather if available
+        if (data.weather) {
+            const weather = data.weather;
+            const climate = data.climate_zone;
+            
+            weatherDetails.innerHTML = `
+                <div class="weather-item">
+                    <span><i class="bi bi-thermometer"></i> Temperature</span>
+                    <span>${weather.temperature}°C</span>
+                </div>
+                <div class="weather-item">
+                    <span><i class="bi bi-droplet"></i> Humidity</span>
+                    <span>${weather.humidity}%</span>
+                </div>
+                <div class="weather-item">
+                    <span><i class="bi bi-cloud"></i> Condition</span>
+                    <span>${weather.description}</span>
+                </div>
+                <div class="weather-item">
+                    <span><i class="bi bi-wind"></i> Wind Speed</span>
+                    <span>${weather.wind_speed} m/s</span>
+                </div>
+            `;
+            weatherInfo.style.display = 'block';
+        }
+        
+    } catch (error) {
+        console.error('Location detection failed:', error);
+        locationText.innerHTML = `
+            <span class="text-warning"><i class="bi bi-exclamation-triangle"></i> Location detection failed</span><br>
+            <small>You can still use all features manually</small>
+        `;
+    }
+}
+
+function refreshLocation() {
+    detectLocation();
+}
+
+</script>
+{% endblock %}

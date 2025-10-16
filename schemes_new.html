@@ -1,0 +1,534 @@
+{% extends 'base.html' %}
+{% block title %}CropMate - Schemes & Support{% endblock %}
+{% block extra_head %}
+    <style>
+        .scheme-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            border-left: 4px solid var(--primary-color);
+            transition: var(--transition-normal);
+        }
+        
+        .scheme-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .scheme-card.central {
+            border-left-color: var(--info);
+        }
+        
+        .scheme-card.state {
+            border-left-color: var(--success);
+        }
+        
+        .scheme-card.private {
+            border-left-color: var(--warning);
+        }
+        
+        .scheme-header {
+            display: flex;
+            justify-content: between;
+            align-items: start;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .scheme-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .scheme-type {
+            display: inline-block;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .scheme-type.central {
+            background: linear-gradient(135deg, #D1ECF1 0%, #BEE5EB 100%);
+            color: var(--info);
+        }
+        
+        .scheme-type.state {
+            background: linear-gradient(135deg, #D4EDDA 0%, #C3E6CB 100%);
+            color: var(--success);
+        }
+        
+        .scheme-type.private {
+            background: linear-gradient(135deg, #FFF3CD 0%, #FFEAA7 100%);
+            color: var(--warning);
+        }
+        
+        .scheme-description {
+            color: var(--gray);
+            margin-bottom: var(--spacing-md);
+            line-height: 1.6;
+        }
+        
+        .scheme-benefits {
+            background: var(--gradient-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .scheme-benefits h6 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .scheme-benefits ul {
+            margin: 0;
+            padding-left: var(--spacing-md);
+        }
+        
+        .scheme-benefits li {
+            margin-bottom: var(--spacing-xs);
+            color: var(--dark-gray);
+        }
+        
+        .scheme-eligibility {
+            background: var(--white);
+            border: 1px solid var(--light-gray);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .scheme-eligibility h6 {
+            color: var(--dark-gray);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .scheme-eligibility p {
+            color: var(--gray);
+            margin: 0;
+        }
+        
+        .scheme-contact {
+            background: var(--gradient-primary);
+            color: var(--white);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+        
+        .scheme-contact h6 {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .contact-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .contact-info i {
+            margin-right: var(--spacing-sm);
+            width: 20px;
+        }
+        
+        .filter-section {
+            background: var(--gradient-light);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .filter-btn {
+            background: var(--white);
+            border: 2px solid var(--primary-color);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            margin: var(--spacing-xs);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-weight: 500;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .search-section {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .search-input {
+            border: 2px solid var(--light-gray);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-size-lg);
+            width: 100%;
+            transition: var(--transition-fast);
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(46, 139, 87, 0.25);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1><i class="bi bi-bank"></i> Schemes & Support</h1>
+        <p class="subtitle">Access government schemes, subsidies, and support contacts for your farming needs</p>
+    </div>
+
+    <div class="search-section">
+        <div class="row">
+            <div class="col-md-8">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search for schemes, subsidies, or support...">
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option value="central">Central Government</option>
+                    <option value="state">State Government</option>
+                    <option value="private">Private Sector</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-section">
+        <h5 class="mb-3"><i class="bi bi-funnel"></i> Filter by Type</h5>
+        <div class="d-flex flex-wrap">
+            <button class="filter-btn active" data-filter="all">All Schemes</button>
+            <button class="filter-btn" data-filter="central">Central Government</button>
+            <button class="filter-btn" data-filter="state">State Government</button>
+            <button class="filter-btn" data-filter="private">Private Sector</button>
+        </div>
+    </div>
+
+    <div class="row" id="schemesContainer">
+        <!-- Central Government Schemes -->
+        <div class="col-md-6 mb-4" data-category="central">
+            <div class="scheme-card central">
+                <div class="scheme-header">
+                    <div>
+                        <div class="scheme-type central">Central Government</div>
+                        <h4 class="scheme-title">Pradhan Mantri Kisan Sampada Yojana</h4>
+                    </div>
+                </div>
+                <p class="scheme-description">
+                    A comprehensive scheme for the development of food processing sector in the country.
+                </p>
+                <div class="scheme-benefits">
+                    <h6><i class="bi bi-check-circle"></i> Benefits</h6>
+                    <ul>
+                        <li>Up to 50% subsidy for infrastructure development</li>
+                        <li>Credit linked capital investment subsidy</li>
+                        <li>Support for cold chain infrastructure</li>
+                        <li>Training and capacity building programs</li>
+                    </ul>
+                </div>
+                <div class="scheme-eligibility">
+                    <h6><i class="bi bi-person-check"></i> Eligibility</h6>
+                    <p>Individual entrepreneurs, companies, cooperatives, and farmer producer organizations</p>
+                </div>
+                <div class="scheme-contact">
+                    <h6><i class="bi bi-telephone"></i> Contact Information</h6>
+                    <div class="contact-info">
+                        <i class="bi bi-phone"></i>
+                        <span>1800-180-1551</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-envelope"></i>
+                        <span>info@mofpi.nic.in</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-globe"></i>
+                        <span>www.mofpi.nic.in</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4" data-category="central">
+            <div class="scheme-card central">
+                <div class="scheme-header">
+                    <div>
+                        <div class="scheme-type central">Central Government</div>
+                        <h4 class="scheme-title">Pradhan Mantri Fasal Bima Yojana</h4>
+                    </div>
+                </div>
+                <p class="scheme-description">
+                    Crop insurance scheme to provide financial support to farmers in case of crop failure.
+                </p>
+                <div class="scheme-benefits">
+                    <h6><i class="bi bi-check-circle"></i> Benefits</h6>
+                    <ul>
+                        <li>Low premium rates (1.5% to 5% of sum insured)</li>
+                        <li>Coverage for all crops and all risks</li>
+                        <li>Quick claim settlement</li>
+                        <li>Use of technology for assessment</li>
+                    </ul>
+                </div>
+                <div class="scheme-eligibility">
+                    <h6><i class="bi bi-person-check"></i> Eligibility</h6>
+                    <p>All farmers growing notified crops in notified areas</p>
+                </div>
+                <div class="scheme-contact">
+                    <h6><i class="bi bi-telephone"></i> Contact Information</h6>
+                    <div class="contact-info">
+                        <i class="bi bi-phone"></i>
+                        <span>1800-425-1551</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-envelope"></i>
+                        <span>support@pmfby.gov.in</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-globe"></i>
+                        <span>www.pmfby.gov.in</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- State Government Schemes -->
+        <div class="col-md-6 mb-4" data-category="state">
+            <div class="scheme-card state">
+                <div class="scheme-header">
+                    <div>
+                        <div class="scheme-type state">State Government</div>
+                        <h4 class="scheme-title">Punjab Kisan Vikas Yojana</h4>
+                    </div>
+                </div>
+                <p class="scheme-description">
+                    State government scheme for agricultural development and farmer welfare in Punjab.
+                </p>
+                <div class="scheme-benefits">
+                    <h6><i class="bi bi-check-circle"></i> Benefits</h6>
+                    <ul>
+                        <li>Subsidy on seeds and fertilizers</li>
+                        <li>Free electricity for irrigation</li>
+                        <li>Direct benefit transfer</li>
+                        <li>Soil health card scheme</li>
+                    </ul>
+                </div>
+                <div class="scheme-eligibility">
+                    <h6><i class="bi bi-person-check"></i> Eligibility</h6>
+                    <p>Farmers registered in Punjab with valid land records</p>
+                </div>
+                <div class="scheme-contact">
+                    <h6><i class="bi bi-telephone"></i> Contact Information</h6>
+                    <div class="contact-info">
+                        <i class="bi bi-phone"></i>
+                        <span>0172-274-0000</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-envelope"></i>
+                        <span>agri.punjab@gov.in</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-globe"></i>
+                        <span>www.agripunjab.gov.in</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4" data-category="state">
+            <div class="scheme-card state">
+                <div class="scheme-header">
+                    <div>
+                        <div class="scheme-type state">State Government</div>
+                        <h4 class="scheme-title">Maharashtra Krishi Pump Yojana</h4>
+                    </div>
+                </div>
+                <p class="scheme-description">
+                    Scheme for providing irrigation facilities to farmers through solar pumps.
+                </p>
+                <div class="scheme-benefits">
+                    <h6><i class="bi bi-check-circle"></i> Benefits</h6>
+                    <ul>
+                        <li>90% subsidy on solar pumps</li>
+                        <li>Free installation and maintenance</li>
+                        <li>Reduced electricity costs</li>
+                        <li>Environment-friendly irrigation</li>
+                    </ul>
+                </div>
+                <div class="scheme-eligibility">
+                    <h6><i class="bi bi-person-check"></i> Eligibility</h6>
+                    <p>Small and marginal farmers in Maharashtra</p>
+                </div>
+                <div class="scheme-contact">
+                    <h6><i class="bi bi-telephone"></i> Contact Information</h6>
+                    <div class="contact-info">
+                        <i class="bi bi-phone"></i>
+                        <span>022-2204-0000</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-envelope"></i>
+                        <span>agri.maharashtra@gov.in</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-globe"></i>
+                        <span>www.agri.maharashtra.gov.in</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Private Sector Schemes -->
+        <div class="col-md-6 mb-4" data-category="private">
+            <div class="scheme-card private">
+                <div class="scheme-header">
+                    <div>
+                        <div class="scheme-type private">Private Sector</div>
+                        <h4 class="scheme-title">Tata Kisan Sansar</h4>
+                    </div>
+                </div>
+                <p class="scheme-description">
+                    Private initiative providing comprehensive agricultural services to farmers.
+                </p>
+                <div class="scheme-benefits">
+                    <h6><i class="bi bi-check-circle"></i> Benefits</h6>
+                    <ul>
+                        <li>Quality seeds and fertilizers</li>
+                        <li>Technical advisory services</li>
+                        <li>Market linkage support</li>
+                        <li>Credit facilities</li>
+                    </ul>
+                </div>
+                <div class="scheme-eligibility">
+                    <h6><i class="bi bi-person-check"></i> Eligibility</h6>
+                    <p>All farmers across India</p>
+                </div>
+                <div class="scheme-contact">
+                    <h6><i class="bi bi-telephone"></i> Contact Information</h6>
+                    <div class="contact-info">
+                        <i class="bi bi-phone"></i>
+                        <span>1800-209-0000</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-envelope"></i>
+                        <span>kisan@tata.com</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-globe"></i>
+                        <span>www.tatakisan.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4" data-category="private">
+            <div class="scheme-card private">
+                <div class="scheme-header">
+                    <div>
+                        <div class="scheme-type private">Private Sector</div>
+                        <h4 class="scheme-title">Mahindra Samriddhi</h4>
+                    </div>
+                </div>
+                <p class="scheme-description">
+                    Mahindra's farmer-centric program providing end-to-end agricultural solutions.
+                </p>
+                <div class="scheme-benefits">
+                    <h6><i class="bi bi-check-circle"></i> Benefits</h6>
+                    <ul>
+                        <li>Modern farming equipment</li>
+                        <li>Expert advisory services</li>
+                        <li>Digital farming solutions</li>
+                        <li>Financial assistance</li>
+                    </ul>
+                </div>
+                <div class="scheme-eligibility">
+                    <h6><i class="bi bi-person-check"></i> Eligibility</h6>
+                    <p>Farmers with valid land documents</p>
+                </div>
+                <div class="scheme-contact">
+                    <h6><i class="bi bi-telephone"></i> Contact Information</h6>
+                    <div class="contact-info">
+                        <i class="bi bi-phone"></i>
+                        <span>1800-419-0000</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-envelope"></i>
+                        <span>samriddhi@mahindra.com</span>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-globe"></i>
+                        <span>www.mahindrasamriddhi.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const schemesContainer = document.getElementById('schemesContainer');
+    const schemeCards = document.querySelectorAll('.scheme-card');
+
+    // Search functionality
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        filterSchemes();
+    });
+
+    // Category filter
+    categoryFilter.addEventListener('change', function() {
+        filterSchemes();
+    });
+
+    // Filter buttons
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            filterSchemes();
+        });
+    });
+
+    function filterSchemes() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCategory = categoryFilter.value;
+        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+
+        schemeCards.forEach(card => {
+            const cardContainer = card.closest('[data-category]');
+            const cardText = card.textContent.toLowerCase();
+            const cardCategory = cardContainer.dataset.category;
+
+            const matchesSearch = searchTerm === '' || cardText.includes(searchTerm);
+            const matchesCategory = selectedCategory === '' || cardCategory === selectedCategory;
+            const matchesFilter = activeFilter === 'all' || cardCategory === activeFilter;
+
+            if (matchesSearch && matchesCategory && matchesFilter) {
+                cardContainer.style.display = 'block';
+            } else {
+                cardContainer.style.display = 'none';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
