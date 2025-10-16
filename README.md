@@ -422,7 +422,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **Supported Crops**: 22 with full metadata
 
 ### Technical Specifications
-- **Python Version**: 3.7+ compatible
+- **Python Version**: 3.7+ compatible (BUT ONLY UP TO 3.10.13! NUMPY LIMITATIONS BEYOND THAT POINT, MAY NOT WORK!)
 - **Flask Version**: 2.3.3
 - **ML Framework**: scikit-learn 1.3.0
 - **Frontend**: Bootstrap 5.3.0
