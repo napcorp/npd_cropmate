@@ -39,14 +39,7 @@ CropMate is a comprehensive web application that uses machine learning to help f
 - **Location-Based Suitability**: State and district-specific crop recommendations
 - **Weather Integration**: Real-time weather data for enhanced recommendations
 - **Market Analysis**: Price trends, forecasting, and market insights
-- **Community Features**: Forums, success stories, and expert advice
 - **Government Schemes**: Comprehensive database of agricultural schemes and subsidies
-
-### 🚧 Upcoming Features (In Development)
-- **IoT Integration**: Sensor data integration for precision farming
-- **Mobile App**: Native iOS and Android applications
-- **Multi-language Support**: Regional Indian language support
-- **Advanced Analytics**: Historical data analysis and trend prediction
 
 ## 🚀 Quick Start
 
@@ -80,9 +73,14 @@ CropMate is a comprehensive web application that uses machine learning to help f
    ```bash
    python app.py
    ```
+   OR!
+   ```bash
+   gunicorn app:app
+   ```
+   Use Gunicorn for the latest release, made for deployment in Railway.
 
 5. **Access the application**
-   Open your browser and go to: `http://localhost:5000`
+   Open your browser and go to: `http://localhost:5000` or `127.0.0.1`
 
 ## 📊 How to Use
 
@@ -243,11 +241,6 @@ Crop_Recommendation/
 - `GET /api/market/insights/<crop_name>` - Market insights
 - `GET /api/schemes` - Government schemes and subsidies
 
-**Community & Social APIs**
-- `GET /api/community/forums` - Community forums
-- `GET /api/community/success-stories` - Farmer success stories
-- `GET /api/community/expert-advice` - Expert advice and tips
-
 ## 🧪 Testing & Quality Assurance
 
 ### Comprehensive Test Suite
@@ -295,8 +288,7 @@ python test_market_trends.py
 - ✅ Crop details API
 - ✅ Location suitability API
 - ✅ Market trends API
-- ✅ Community features API
-
+  
 **Feature-Specific Tests**
 - ✅ Crop comparison functionality
 - ✅ Suitability analysis algorithms
@@ -368,26 +360,6 @@ The enhanced calendar system provides:
 - **Caching Layer**: Redis integration for session management
 - **Load Balancing**: Horizontal scaling with multiple Flask instances
 
-## 🔮 Future Roadmap
-
-### Phase 1: Enhanced Intelligence (Q2 2025)
-- **Real-time Weather Integration**: Live weather API integration
-- **Advanced ML Models**: Deep learning for better predictions
-- **IoT Sensor Integration**: Soil moisture, temperature sensors
-- **Predictive Analytics**: Yield forecasting and risk assessment
-
-### Phase 2: Mobile & Accessibility (Q3 2025)
-- **Mobile App**: Native iOS and Android applications
-- **Offline Mode**: Local data storage for remote areas
-- **Multi-language Support**: Hindi, Tamil, Telugu, Bengali
-- **Voice Interface**: Speech-to-text for data entry
-
-### Phase 3: Community & Commerce (Q4 2025)
-- **Farmer Marketplace**: Direct buyer-seller connections
-- **Supply Chain Integration**: Logistics and transportation
-- **Financial Services**: Micro-loans and insurance
-- **Expert Consultation**: Video calls with agricultural experts
-
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
@@ -402,8 +374,21 @@ Contributions are welcome! Please feel free to submit pull requests or open issu
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+Copyright 2025 Napden
 
-## 🙏 Acknowledgments
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+## Credits
 
 - Dataset: Crop Recommendation Dataset from Kaggle
 - Icons: Bootstrap Icons
@@ -435,7 +420,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-**Last Updated**: December 2024  
-**Version**: 2.1.0  
-**Status**: Production Ready with Advanced ML Pipeline  
-**License**: MIT License
+**Last Updated**: October 16th 2025 
+**Version**: 2.0
+**Status**: Production Ready with Advanced ML Pipeline, capable of public build on Railway.
+**License**: MIT License, Apache License 2.0
