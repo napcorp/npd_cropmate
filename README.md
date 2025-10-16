@@ -424,9 +424,13 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ### Technical Specifications
 - **Python Version**: 3.7+ compatible (BUT ONLY UP TO 3.10.13! NUMPY LIMITATIONS BEYOND THAT POINT, MAY NOT WORK!)
 - **Flask Version**: 2.3.3
+- **NumPY Version**: 1.24.3
+- **Pandas Version**:2.0.3
+- **Requests Version**: 2.31.0
+- **Werkzeug**: 2.3.7 or 2.3.8, depends on which release.
 - **ML Framework**: scikit-learn 1.3.0
 - **Frontend**: Bootstrap 5.3.0
-- **Browser Support**: Chrome, Firefox, Safari, Edge
+- **Browser Support**: Chrome, Firefox, Safari, Edge, Any Chromium Based Browser, Limited DRM Support on macOS 13+, tested on macOS 13, 14, 15, 26 BETA 3.
 - **Mobile Support**: iOS 12+, Android 8+
 
 ---
