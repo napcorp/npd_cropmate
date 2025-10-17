@@ -50,6 +50,21 @@
             color: var(--white);
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
+        .hero-illustration {
+            width: 120px;
+            height: 120px;
+            display: inline-block;
+            margin-bottom: var(--spacing-md);
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.08);
+        }
+        .hero-illustration img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
         
         .feature-grid {
             display: grid;
@@ -147,8 +162,9 @@
 {% block content %}
 <div class="hero-section section-accent" aria-label="Welcome section">
     <div class="container text-center">
-        <div class="hero-icon">
-            <i class="bi bi-flower1"></i>
+        <div class="hero-illustration" aria-hidden="true">
+            <img src="{{ url_for('static', filename='images/flower.png') }}" alt="Flower illustration" onerror="this.style.display='none'; this.nextElementSibling && (this.nextElementSibling.style.display='inline-block');">
+            <i class="bi bi-flower1" style="display:none; font-size:4rem; color:var(--white); text-shadow:0 2px 4px rgba(0,0,0,0.3);"></i>
         </div>
         <h1 class="hero-title">Welcome to CropMate</h1>
         <p class="hero-subtitle">Your all-in-one digital companion for smarter, more profitable, and sustainable farming</p>
@@ -181,8 +197,8 @@
             </div>
             <div class="col-md-3 col-6 mb-4 mb-md-0">
                 <div class="stat-item">
-                    <span class="stat-number">95%</span>
-                    <div class="stat-label">Accuracy</div>
+                    <span class="stat-number">8</span>
+                    <div class="stat-label">Union Territories</div>
                 </div>
             </div>
             <div class="col-md-3 col-6">
@@ -283,16 +299,7 @@
             </a>
         </div>
 
-        <div class="feature-card fade-in-up">
-            <div class="feature-icon">
-                <i class="bi bi-people"></i>
-            </div>
-            <h4>Farmer Community</h4>
-            <p>Connect with fellow farmers, read success stories, and get expert advice. Learn from the community.</p>
-            <a href="/community" class="btn btn-primary">
-                <i class="bi bi-arrow-right"></i> Join Community
-            </a>
-        </div>
+        
     </div>
 
     <div class="text-center mt-5">

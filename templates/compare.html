@@ -61,23 +61,25 @@
         
         .crop-card img {
             width: 100%;
-            height: 120px;
+            aspect-ratio: 1 / 1; /* force a square */
             object-fit: cover;
             border-radius: var(--radius-md);
             margin-bottom: var(--spacing-md);
             border: 2px solid transparent;
             transition: var(--transition-fast);
         }
-        
+
+        /* Allow larger card layouts to show a larger square by adjusting the container size */
         @media (min-width: 768px) {
             .crop-card img {
-                height: 140px;
+                /* keep square but allow natural width to determine size */
+                aspect-ratio: 1 / 1;
             }
         }
-        
+
         @media (min-width: 1200px) {
             .crop-card img {
-                height: 150px;
+                aspect-ratio: 1 / 1;
             }
         }
         
