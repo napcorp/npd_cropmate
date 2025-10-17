@@ -895,21 +895,7 @@
                 }
             });
 
-            // Update profitability details
-            const details = document.getElementById('profitabilityDetails');
-            details.innerHTML = `
-                <h5 class="mb-3">Key Insights</h5>
-                <div class="mb-3">
-                    <h6>${crop1.name}</h6>
-                    <p class="mb-2">Profit Margin: ${profit1.profit_margin || 0}%</p>
-                    <p class="mb-2">Investment Required: ${profit1.investment || 0}%</p>
-                </div>
-                <div>
-                    <h6>${crop2.name}</h6>
-                    <p class="mb-2">Profit Margin: ${profit2.profit_margin || 0}%</p>
-                    <p class="mb-2">Investment Required: ${profit2.investment || 0}%</p>
-                </div>
-            `;
+            
         }
 
         // Function to update map markers
