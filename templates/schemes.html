@@ -17,7 +17,7 @@
         margin-bottom: 20px;
     }
 
-    .image-upload-section input[type='file' {
+    .image-upload-section input[type='file'] {
         margin-bottom: 10px;
     }
 
@@ -42,16 +42,20 @@
         padding: 8px 12px;
         border-radius: 4px;
         margin-bottom: 5px;
+        max-width: 80%;
+        word-wrap: break-word;
     }
 
     .user-message {
         background-color: #e2f0ff;
         text-align: right;
+        margin-left: auto;
     }
 
     .ai-message {
         background-color: #f0f0f0;
         text-align: left;
+        margin-right: auto;
     }
 
     .chat-input-section {
@@ -104,67 +108,118 @@
 
 {% block extra_scripts %}
 <script>
-    document.getElementById('imageUpload').addEventListener('change', function(event) {
-        var reader = new FileReader();
-        reader.onload = function() {
-            var output = document.getElementById('uploadedImage');
-            output.src = reader.result;
-            output.style.display = 'block';
-            analyzeImage(reader.result);
+    // Get references to the HTML elements
+    const imageUpload = document.getElementById('imageUpload');
+    const uploadedImage = document.getElementById('uploadedImage');
+    const chatWindow = document.getElementById('chatWindow');
+    const chatInput = document.getElementById('chatInput');
+
+    // Add an event listener for the image upload
+    imageUpload.addEventListener('change', function(event) {
+        // Ensure a file was selected
+        if (event.target.files && event.target.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                // Display the uploaded image
+                uploadedImage.src = e.target.result;
+                uploadedImage.style.display = 'block';
+
+                // Call the function to start the analysis
+                // We'll pass the base64 encoded image data
+                analyzeImage(e.target.result);
         };
+
+            // Read the image file as a Data URL (base64)
         reader.readAsDataURL(event.target.files[0]);
+        }
     });
 
-    function sendMessage() {
-        var chatInput = document.getElementById('chatInput');
-        var chatWindow = document.getElementById('chatWindow');
-        var messageText = chatInput.value;
-
-        if (messageText.trim() !== '') {
-            // User message
-            var userMessage = document.createElement('div');
-            userMessage.classList.add('chat-message', 'user-message');
-            userMessage.textContent = messageText;
-            chatWindow.appendChild(userMessage);
-
-            // Simulate AI response (replace with actual API call)
-            getAiResponse(messageText);
-
-            chatInput.value = '';
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }
+    // Function to add a message to the chat window
+    function addMessage(message, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('chat-message', sender === 'user' ? 'user-message' : 'ai-message');
+        messageDiv.textContent = message;
+        chatWindow.appendChild(messageDiv);
+        // Scroll to the bottom of the chat window
+        chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
+    // Function to handle the initial image analysis
     function analyzeImage(imageData) {
-        // Placeholder for Gemini API call
-        // Replace with actual API endpoint and credentials
-        // This is just a simulation
-        var chatWindow = document.getElementById('chatWindow');
-        var aiMessage = document.createElement('div');
-        aiMessage.classList.add('chat-message', 'ai-message');
-        aiMessage.textContent = "Analyzing the image...";
-        chatWindow.appendChild(aiMessage);
+        // Clear previous chat
+        chatWindow.innerHTML = '';
 
-        setTimeout(function() {
-            aiMessage.textContent = "AI: Based on the image, the crop appears healthy with no immediate signs of disease or nutrient deficiency. However, further inspection is always recommended.";
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }, 2000);
+        // Display a placeholder message while the AI is "thinking"
+        addMessage('Analyzing your crop image... Please wait.', 'ai');
+
+        // --- MOCK API CALL ---
+        // In a real application, you would send the imageData to your backend API here.
+        // For example:
+        // fetch('/api/analyze-crop', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ image: imageData.split(',')[1] }) // Send only base64 part
+        // })
+        // .then(response => response.json())
+        // .then(data => {
+        //     // Replace the placeholder with the actual analysis result
+        //     chatWindow.innerHTML = ''; // Clear the "Analyzing..." message
+        //     addMessage(data.analysis, 'ai');
+        // })
+        // .catch(error => {
+        //     console.error('Error:', error);
+        //     addMessage('Sorry, an error occurred during analysis.', 'ai');
+        // });
+
+        // For demonstration purposes, we'll use a setTimeout to simulate a network request.
+        setTimeout(() => {
+            // Clear the placeholder and show a mock response
+            chatWindow.innerHTML = '';
+            const mockResponse = "Analysis complete. The image appears to show a tomato plant with early signs of blight. I recommend applying a copper-based fungicide. What would you like to know more about?";
+            addMessage(mockResponse, 'ai');
+        }, 2000); // Simulate a 2-second delay
     }
 
-    function getAiResponse(userMessage) {
-        // Placeholder for Gemini API call based on image and user query
-        // Replace with actual API endpoint and credentials
-        // This is just a simulation
-        var chatWindow = document.getElementById('chatWindow');
-        var aiMessage = document.createElement('div');
-        aiMessage.classList.add('chat-message', 'ai-message');
-        aiMessage.textContent = "Thinking...";
-        chatWindow.appendChild(aiMessage);
+    // Function to send a user's message
+    function sendMessage() {
+        const messageText = chatInput.value.trim();
+        if (messageText === '') {
+            return; // Don't send empty messages
+        }
 
-        setTimeout(function() {
-            aiMessage.textContent = "AI: That's a great question! Based on the previous image analysis, you should further look into potential pests in your area.";
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        }, 2000);
+        // Add the user's message to the chat window
+        addMessage(messageText, 'user');
+
+        // Clear the input field
+        chatInput.value = '';
+
+        // Display a thinking indicator for the AI
+        addMessage('...', 'ai');
+
+        // --- MOCK API CALL for follow-up questions ---
+        // In a real application, you would send the messageText (and maybe context/session ID)
+        // to your backend chatbot API.
+        // fetch('/api/chat', { ... })
+
+        // Simulate an AI response
+        setTimeout(() => {
+            // Remove the "..." thinking indicator
+            const thinkingIndicator = chatWindow.lastChild;
+            if (thinkingIndicator && thinkingIndicator.textContent === '...') {
+                chatWindow.removeChild(thinkingIndicator);
+            }
+            const mockResponse = "Copper-based fungicides are effective against blight. You should apply them every 7-10 days, or after rain. Ensure you follow the product's instructions carefully. Is there anything else I can help with?";
+            addMessage(mockResponse, 'ai');
+        }, 1500); // Simulate a 1.5-second delay
     }
+
+    // Allow sending messages by pressing Enter in the input field
+    chatInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent default action
+            sendMessage();
+        }
+    });
 </script>
 {% endblock %}
