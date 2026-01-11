@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block title %}CropMate - Health Analysis{% endblock %}
+{% block extra_head %}
+    <style>
+        /* Chatbot styles */
+        .chat-container {
+            max-width: 700px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            background-color: #f9f9f9;
+        }
+
+        .chat-header {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .chat-messages {
+            padding: 10px;
+            height: 400px;
+            overflow-y: scroll;
+        }
+
+        .message {
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            clear: both;
+        }
+
+        .user-message {
+            background-color: #e2f0ff;
+            float: right;
+        }
+
+        .bot-message {
+            background-color: #f0f0f0;
+            float: left;
+        }
+
+        .chat-input {
+            padding: 10px;
+            background-color: #fff;
+            border-top: 1px solid #ccc;
+            display: flex;
+        }
+
+        .chat-input input[type='text'] {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .chat-input button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        /* Image upload styles */
+        .image-upload-container {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .image-preview {
+            max-width: 200px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="page-header section">
+            <h1><i class="bi bi-heart-pulse"></i> Health Analysis Chatbot</h1>
+            <p class="subtitle">Get insights on your crop's health by chatting with our AI assistant and uploading images.</p>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-header">
+                Crop Health Assistant
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- Chat messages will be added here -->
+            </div>
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="Type your message here...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+            <div class="image-upload-container">
+                <input type="file" id="imageUpload" accept="image/*" onchange="previewImage(this)">
+                <img id="imagePreview" class="image-preview" src="" alt="Image Preview" style="display: none;">
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+        function sendMessage() {
+            var messageInput = document.getElementById('messageInput');
+            var chatMessages = document.getElementById('chatMessages');
+            var messageText = messageInput.value;
+
+            if (messageText.trim() !== '') {
+                // User message
+                var userMessage = document.createElement('div');
+                userMessage.classList.add('message', 'user-message');
+                userMessage.textContent = messageText;
+                chatMessages.appendChild(userMessage);
+
+                // Bot response (simulated)
+                var botMessage = document.createElement('div');
+                botMessage.classList.add('message', 'bot-message');
+                botMessage.textContent = "(Bot) Analyzing your message..."; // Replace with actual bot logic
+                chatMessages.appendChild(botMessage);
+
+                // Clear input
+                messageInput.value = '';
+
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        function previewImage(input) {
+            var imagePreview = document.getElementById('imagePreview');
+            var file = input.files[0;
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+            }
+
+            reader.readAsDataURL(file);
+        }
+    </script>
+{% endblock %}
